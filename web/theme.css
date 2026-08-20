@@ -91,6 +91,18 @@ nav.nav-links a[aria-current="page"]{ color: var(--ink); font-weight: 600; borde
 .attorney-list li{ font-size: 13px; line-height: 1.4; }
 .attorney-list strong{ display: block; color: var(--ink); }
 .attorney-list small{ color: var(--ink-soft); }
+
+.timeline-list{ margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.timeline-entry{ padding: 18px 20px; }
+.timeline-meta{ display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.timeline-meta time{ color: var(--ink-soft); font-size: 12.5px; font-weight: 600; }
+.timeline-entry h3{ margin: 0 0 6px; font-size: 15.5px; line-height: 1.4; font-weight: 600; }
+.timeline-entry .meta{ margin: 0; color: var(--ink-soft); font-size: 12.5px; }
+.tag-motion{ background: var(--accent-soft); color: var(--accent); }
+.tag-order, .tag-opinion{ background: rgba(179,38,30,0.10); color: var(--danger); }
+.tag-notice{ background: var(--accent-2-soft); color: var(--accent-2); }
+.tag-stipulation{ background: rgba(20,24,27,0.08); color: var(--ink); }
+.tag-other{ background: rgba(20,24,27,0.06); color: var(--ink-soft); }
 .hero h1{ margin: 0; max-width: 640px; font-size: clamp(30px, 5.6vw, 48px); line-height: 1.04; letter-spacing: -.02em; }
 .hero-copy{ max-width: 560px; margin: 16px 0 0; color: var(--ink-soft); font-size: 16px; line-height: 1.55; }
 
