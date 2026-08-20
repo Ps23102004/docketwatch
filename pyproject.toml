@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "docketwatch"
+version = "0.1.0"
+description = "Local-only federal court docket tracker — polls CourtListener/RECAP for new filings on cases you track, diffs them against what you've already seen."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+dependencies = [
+    "requests",
+    "pyyaml",
+    "llm-ladder",
+    "typer",
+    "rich",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+docketwatch = "docketwatch.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/docketwatch"]
+artifacts = ["src/docketwatch/fixtures/*.json"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"web" = "web"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/docketwatch/*",
+    "web/*",
+]
+
+[tool.pytest.ini_options]
+markers = ["network: hits a live external API"]
+pythonpath = ["src"]

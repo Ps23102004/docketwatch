@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DocketWatch</title>
+</head>
+<body>
+  <h1>DocketWatch</h1>
+  <p>Placeholder shell — the frontend worker owns this directory.</p>
+  <p>The JSON API is live at
+    <code>/api/cases</code>,
+    <code>/api/cases/{id}</code>,
+    <code>/api/cases/{id}/timeline</code>,
+    <code>/api/cases/{id}/digest</code>,
+    and <code>POST /api/ask</code>.</p>
+  <pre id="out">loading /api/cases…</pre>
+  <script>
+    fetch('/api/cases')
+      .then(r => r.json())
+      .then(d => { document.getElementById('out').textContent = JSON.stringify(d, null, 2); })
+      .catch(e => { document.getElementById('out').textContent = 'error: ' + e; });
+  </script>
+</body>
+</html>

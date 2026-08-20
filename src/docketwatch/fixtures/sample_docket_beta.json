@@ -1,0 +1,166 @@
+{
+  "id": "fixture-beta-2",
+  "case_name": "United States ex rel. Okonjo v. Meridian Coastal Freight Co.",
+  "docket_number": "1:25-cv-03388",
+  "court": "S.D.N.Y.",
+  "court_id": "nysd",
+  "date_filed": "2025-11-03",
+  "date_terminated": null,
+  "assigned_to": "Hon. Aaron P. Villanueva",
+  "nature_of_suit": "375 False Claims Act",
+  "cause": "31:3729 False Claims Act",
+  "absolute_url": "",
+  "fetched_at": "2026-08-20T00:00:00Z",
+  "source": "fixture",
+  "note": "Hand-authored sample data, not a real case -- no such relator, defendant, or filing exists. See spike_courtlistener_auth.py for what it takes to track a real case.",
+  "parties": [
+    {
+      "name": "United States of America",
+      "type": "Plaintiff",
+      "attorneys": [
+        {"name": "Renata Duclos", "firm": "U.S. Attorney's Office (fictional)", "email": "rduclos@example.invalid"}
+      ]
+    },
+    {
+      "name": "Ngozi Okonjo",
+      "type": "Relator",
+      "attorneys": [
+        {"name": "Samuel Ridgeway", "firm": "Ridgeway Qui Tam Group", "email": "sridgeway@example.invalid"}
+      ]
+    },
+    {
+      "name": "Meridian Coastal Freight Co.",
+      "type": "Defendant",
+      "attorneys": [
+        {"name": "Helena Krupp", "firm": "Krupp Ansell & Vance", "email": "hkrupp@example.invalid"},
+        {"name": "Ben Tourville", "firm": "Krupp Ansell & Vance", "email": "btourville@example.invalid"}
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "id": "fixture-beta-e1",
+      "docket_id": "fixture-beta-2",
+      "date_filed": "2025-11-03",
+      "entry_number": 1,
+      "description": "SEALED COMPLAINT filed under 31 U.S.C. 3730(b)(2) by Ngozi Okonjo on behalf of the United States",
+      "filed_by": "Ngozi Okonjo",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": []
+    },
+    {
+      "id": "fixture-beta-e2",
+      "docket_id": "fixture-beta-2",
+      "date_filed": "2026-01-28",
+      "entry_number": 2,
+      "description": "NOTICE of Election to Intervene in Part filed by United States of America",
+      "filed_by": "United States of America",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": [
+        {
+          "id": "fixture-beta-d2",
+          "document_number": "2",
+          "attachment_number": null,
+          "description": "Notice of Election to Intervene in Part",
+          "page_count": 6,
+          "is_available": false,
+          "file_url": null,
+          "source": "fixture",
+          "note": "Hand-authored sample document, no PDF exists."
+        }
+      ]
+    },
+    {
+      "id": "fixture-beta-e3",
+      "docket_id": "fixture-beta-2",
+      "date_filed": "2026-02-04",
+      "entry_number": 3,
+      "description": "ORDER unsealing the complaint and directing service upon Meridian Coastal Freight Co. Signed by Judge Aaron P. Villanueva.",
+      "filed_by": "Court",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": []
+    },
+    {
+      "id": "fixture-beta-e4",
+      "docket_id": "fixture-beta-2",
+      "date_filed": "2026-03-17",
+      "entry_number": 4,
+      "description": "MOTION to Dismiss the Complaint pursuant to Rules 9(b) and 12(b)(6) filed by Meridian Coastal Freight Co.",
+      "filed_by": "Meridian Coastal Freight Co.",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": [
+        {
+          "id": "fixture-beta-d4",
+          "document_number": "4",
+          "attachment_number": null,
+          "description": "Memorandum of Law in Support of Motion to Dismiss",
+          "page_count": 31,
+          "is_available": false,
+          "file_url": null,
+          "source": "fixture",
+          "note": "Hand-authored sample document, no PDF exists."
+        },
+        {
+          "id": "fixture-beta-d4a1",
+          "document_number": "4",
+          "attachment_number": 1,
+          "description": "Exhibit A - Freight Manifest Summary",
+          "page_count": 9,
+          "is_available": false,
+          "file_url": null,
+          "source": "fixture",
+          "note": "Hand-authored sample document, no PDF exists."
+        }
+      ]
+    },
+    {
+      "id": "fixture-beta-e5",
+      "docket_id": "fixture-beta-2",
+      "date_filed": "2026-04-14",
+      "entry_number": 5,
+      "description": "STIPULATION regarding a Protective Order Governing Confidential Discovery Material, filed jointly by all parties",
+      "filed_by": "All parties",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": []
+    },
+    {
+      "id": "fixture-beta-e6",
+      "docket_id": "fixture-beta-2",
+      "date_filed": "2026-05-08",
+      "entry_number": 6,
+      "description": "ORDER granting in part and denying in part 4 Motion to Dismiss. Counts II and IV are dismissed without prejudice; Count I survives. Signed by Judge Aaron P. Villanueva.",
+      "filed_by": "Court",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": [
+        {
+          "id": "fixture-beta-d6",
+          "document_number": "6",
+          "attachment_number": null,
+          "description": "Opinion and Order on Motion to Dismiss",
+          "page_count": 27,
+          "is_available": false,
+          "file_url": null,
+          "source": "fixture",
+          "note": "Hand-authored sample document, no PDF exists."
+        }
+      ]
+    },
+    {
+      "id": "fixture-beta-e7",
+      "docket_id": "fixture-beta-2",
+      "date_filed": "2026-06-02",
+      "entry_number": 7,
+      "description": "SCHEDULING ORDER setting fact discovery deadline of 2026-11-30 and a status conference for 2026-07-21. Signed by Judge Aaron P. Villanueva.",
+      "filed_by": "Court",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": []
+    }
+  ]
+}

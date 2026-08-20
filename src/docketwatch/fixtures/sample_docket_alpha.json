@@ -1,0 +1,171 @@
+{
+  "id": "fixture-alpha-1",
+  "case_name": "Redwood Analytics, Inc. v. Harbor Systems LLC",
+  "docket_number": "3:26-cv-00417",
+  "court": "N.D. Cal.",
+  "court_id": "cand",
+  "date_filed": "2026-01-14",
+  "date_terminated": null,
+  "assigned_to": "Hon. Marisol E. Trent",
+  "nature_of_suit": "840 Trademark",
+  "cause": "15:1114 Trademark Infringement",
+  "absolute_url": "",
+  "fetched_at": "2026-08-20T00:00:00Z",
+  "source": "fixture",
+  "note": "Hand-authored sample data, not a real case -- no such case, court assignment, or filing exists. See spike_courtlistener_auth.py for what it takes to track a real case.",
+  "parties": [
+    {
+      "name": "Redwood Analytics, Inc.",
+      "type": "Plaintiff",
+      "attorneys": [
+        {"name": "Dana O. Whitfield", "firm": "Whitfield & Marsh LLP", "email": "dwhitfield@example.invalid"},
+        {"name": "Peter Ansah", "firm": "Whitfield & Marsh LLP", "email": "pansah@example.invalid"}
+      ]
+    },
+    {
+      "name": "Harbor Systems LLC",
+      "type": "Defendant",
+      "attorneys": [
+        {"name": "Cleo Barrington", "firm": "Barrington Doyle PC", "email": "cbarrington@example.invalid"}
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "id": "fixture-alpha-e1",
+      "docket_id": "fixture-alpha-1",
+      "date_filed": "2026-01-14",
+      "entry_number": 1,
+      "description": "COMPLAINT for Trademark Infringement against Harbor Systems LLC, filed by Redwood Analytics, Inc. (Filing fee $405, receipt number ACANDC-00000000)",
+      "filed_by": "Redwood Analytics, Inc.",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": [
+        {
+          "id": "fixture-alpha-d1",
+          "document_number": "1",
+          "attachment_number": null,
+          "description": "Complaint",
+          "page_count": 22,
+          "is_available": false,
+          "file_url": null,
+          "source": "fixture",
+          "note": "Hand-authored sample document, no PDF exists."
+        }
+      ]
+    },
+    {
+      "id": "fixture-alpha-e2",
+      "docket_id": "fixture-alpha-1",
+      "date_filed": "2026-01-21",
+      "entry_number": 2,
+      "description": "NOTICE of Appearance by Cleo Barrington on behalf of Harbor Systems LLC",
+      "filed_by": "Harbor Systems LLC",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": []
+    },
+    {
+      "id": "fixture-alpha-e3",
+      "docket_id": "fixture-alpha-1",
+      "date_filed": "2026-02-09",
+      "entry_number": 3,
+      "description": "MOTION to Dismiss for Failure to State a Claim filed by Harbor Systems LLC. Responses due by 2026-02-23.",
+      "filed_by": "Harbor Systems LLC",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": [
+        {
+          "id": "fixture-alpha-d3",
+          "document_number": "3",
+          "attachment_number": null,
+          "description": "Motion to Dismiss",
+          "page_count": 18,
+          "is_available": false,
+          "file_url": null,
+          "source": "fixture",
+          "note": "Hand-authored sample document, no PDF exists."
+        }
+      ]
+    },
+    {
+      "id": "fixture-alpha-e4",
+      "docket_id": "fixture-alpha-1",
+      "date_filed": "2026-02-23",
+      "entry_number": 4,
+      "description": "RESPONSE in Opposition re 3 Motion to Dismiss filed by Redwood Analytics, Inc.",
+      "filed_by": "Redwood Analytics, Inc.",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": []
+    },
+    {
+      "id": "fixture-alpha-e5",
+      "docket_id": "fixture-alpha-1",
+      "date_filed": "2026-03-06",
+      "entry_number": 5,
+      "description": "STIPULATION and Proposed Order Extending Time to Complete Fact Discovery, filed jointly by all parties",
+      "filed_by": "All parties",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": []
+    },
+    {
+      "id": "fixture-alpha-e6",
+      "docket_id": "fixture-alpha-1",
+      "date_filed": "2026-03-19",
+      "entry_number": 6,
+      "description": "ORDER granting 5 Stipulation to Extend Fact Discovery. Fact discovery now closes 2026-06-30. Signed by Judge Marisol E. Trent.",
+      "filed_by": "Court",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": [
+        {
+          "id": "fixture-alpha-d6",
+          "document_number": "6",
+          "attachment_number": null,
+          "description": "Order on Stipulation",
+          "page_count": 2,
+          "is_available": false,
+          "file_url": null,
+          "source": "fixture",
+          "note": "Hand-authored sample document, no PDF exists."
+        }
+      ]
+    },
+    {
+      "id": "fixture-alpha-e7",
+      "docket_id": "fixture-alpha-1",
+      "date_filed": "2026-04-11",
+      "entry_number": 7,
+      "description": "MEMORANDUM OPINION AND ORDER denying 3 Motion to Dismiss. The court finds the complaint adequately pleads likelihood of confusion. Signed by Judge Marisol E. Trent.",
+      "filed_by": "Court",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": [
+        {
+          "id": "fixture-alpha-d7",
+          "document_number": "7",
+          "attachment_number": null,
+          "description": "Memorandum Opinion and Order",
+          "page_count": 14,
+          "is_available": false,
+          "file_url": null,
+          "source": "fixture",
+          "note": "Hand-authored sample document, no PDF exists."
+        }
+      ]
+    },
+    {
+      "id": "fixture-alpha-e8",
+      "docket_id": "fixture-alpha-1",
+      "date_filed": "2026-04-25",
+      "entry_number": 8,
+      "description": "ANSWER to 1 Complaint with Affirmative Defenses and Counterclaim, filed by Harbor Systems LLC",
+      "filed_by": "Harbor Systems LLC",
+      "source": "fixture",
+      "note": "Hand-authored sample entry, not a real filing.",
+      "recap_documents": []
+    }
+  ]
+}
