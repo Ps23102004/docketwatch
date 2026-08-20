@@ -99,12 +99,35 @@
     });
   }
 
+  function trackCase(docketId){
+    var id = requiredText(docketId, 'docketId');
+    return request('/api/cases', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ docket_id: id })
+    });
+  }
+
+  function untrackCase(docketId){
+    return request(caseUrl(docketId), { method: 'DELETE' });
+  }
+
+  function search(query, limit){
+    var q = requiredText(query, 'query');
+    var url = '/api/search?q=' + encodeURIComponent(q);
+    if (limit) url += '&limit=' + encodeURIComponent(limit);
+    return request(url);
+  }
+
   return {
     ApiError: ApiError,
     getCases: getCases,
     getCase: getCase,
     getTimeline: getTimeline,
     getDigest: getDigest,
-    ask: ask
+    ask: ask,
+    trackCase: trackCase,
+    untrackCase: untrackCase,
+    search: search
   };
 });

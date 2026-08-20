@@ -30,6 +30,13 @@
         <h1 id="case-list-heading" class="display">Tracked cases</h1>
         <p>Monitor recent filings and open a case for its full docket history.</p>
       </header>
+
+      <form id="track-form" class="ask-form" aria-label="Track a new case">
+        <input id="track-input" type="text" placeholder="Docket id to track (e.g. fixture-alpha-1)" aria-label="Docket id to track">
+        <button type="submit" class="go">Track</button>
+      </form>
+      <div id="track-status"></div>
+
       <div id="case-list" class="case-list" aria-live="polite" aria-busy="true">
         <div class="state-panel glass">
           <span class="spinner-ring" aria-hidden="true"></span>
@@ -37,6 +44,12 @@
           <p>DocketWatch is reading the cases tracked on this device.</p>
         </div>
       </div>
+
+      <form id="case-search-form" class="search-wrap glass" aria-label="Search for a case to track">
+        <span class="search-ico" aria-hidden="true">⌕</span>
+        <input id="case-search-input" class="search-input" type="search" placeholder="Search for a case by name, docket number or court" aria-label="Search for a case">
+      </form>
+      <div id="case-search-results"></div>
     </section>
 
     <!-- Case-detail worker: remove `hidden`, populate the mount points, and update nav state. -->
