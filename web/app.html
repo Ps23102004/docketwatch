@@ -4,22 +4,33 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DocketWatch</title>
+  <link rel="stylesheet" href="/theme.css">
 </head>
 <body>
-  <h1>DocketWatch</h1>
-  <p>Placeholder shell — the frontend worker owns this directory.</p>
-  <p>The JSON API is live at
-    <code>/api/cases</code>,
-    <code>/api/cases/{id}</code>,
-    <code>/api/cases/{id}/timeline</code>,
-    <code>/api/cases/{id}/digest</code>,
-    and <code>POST /api/ask</code>.</p>
-  <pre id="out">loading /api/cases…</pre>
-  <script>
-    fetch('/api/cases')
-      .then(r => r.json())
-      .then(d => { document.getElementById('out').textContent = JSON.stringify(d, null, 2); })
-      .catch(e => { document.getElementById('out').textContent = 'error: ' + e; });
+  <!-- DocketWatch is a quiet case desk: scan status first, then inspect the filing trail. -->
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#cases">DocketWatch <span>CASE DESK</span></a>
+      <nav aria-label="Primary navigation">
+        <a href="#cases">Cases</a><a href="#search">Search</a>
+      </nav>
+    </header>
+    <main id="app" tabindex="-1"><p class="state">Loading cases…</p></main>
+  </div>
+  <script type="module">
+    import { getCases } from './lib/api.js';
+    import { renderSearch } from './sections/search.js';
+    import { renderDigest } from './sections/digest.js';
+    const app = document.querySelector('#app');
+    let cases = [];
+    const render = async () => {
+      const route = location.hash.slice(1) || 'cases';
+      if (route === 'search') return renderSearch(app, cases);
+      if (route.startsWith('digest/')) return renderDigest(app, route.slice(7));
+      app.innerHTML = `<section class="intro"><p class="eyebrow">Tracked docket desk</p><h1>Cases worth watching.</h1><p>Choose a case to read its filing trail, or search every cached filing.</p></section><section class="case-list">${cases.length ? cases.map(c => `<a class="case-row" href="#digest/${encodeURIComponent(c.docket_id)}"><span><strong>${c.case_name || c.docket_id}</strong><small>${c.docket_number || 'No docket number'} · ${c.court || 'Court not listed'}</small></span><span class="count">${(c.entries || []).length} filings <b>→</b></span></a>`).join('') : '<p class="empty">No cases tracked yet.</p>'}</section>`;
+    };
+    const boot = async () => { try { cases = await getCases(); await render(); } catch (error) { app.innerHTML = `<p class="error">Could not load cases. ${error.message}</p>`; } };
+    addEventListener('hashchange', render); boot();
   </script>
 </body>
 </html>

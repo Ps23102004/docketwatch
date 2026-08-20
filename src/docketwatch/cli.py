@@ -15,8 +15,10 @@ from typing import List, Optional
 
 import typer
 from rich.console import Console
+from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.table import Table
+from rich import box
 
 from docketwatch import digest as digest_mod
 from docketwatch import state_store
@@ -47,12 +49,13 @@ def _mode_note() -> str:
 
 
 def _entries_table(entries: List[DocketEntry], title: str) -> Table:
-    table = Table(title=title)
-    table.add_column("#", justify="right", style="bold")
-    table.add_column("Filed")
-    table.add_column("Type")
-    table.add_column("Description", max_width=72)
-    table.add_column("Docs", justify="right")
+    table = Table(title=title, title_style="bold bright_white", box=box.ROUNDED,
+                  border_style="grey50", header_style="bold cyan", row_styles=["", "dim"])
+    table.add_column("#", justify="right", style="bold bright_white", no_wrap=True)
+    table.add_column("Filed", style="green", no_wrap=True)
+    table.add_column("Type", style="yellow", no_wrap=True)
+    table.add_column("Description", max_width=72, overflow="fold")
+    table.add_column("Docs", justify="right", style="magenta", no_wrap=True)
     for e in entries:
         table.add_row(
             str(e.entry_number) if e.entry_number is not None else "—",
@@ -128,15 +131,16 @@ def cases(json_out: bool = typer.Option(False, "--json")) -> None:
     if not tracked:
         console.print("No cases tracked yet. Run `docketwatch track <docket_id>`.")
         return
-    table = Table(title="Tracked cases")
-    table.add_column("Docket id", style="bold")
+    table = Table(title="Tracked cases", title_style="bold bright_white", box=box.ROUNDED,
+                  border_style="grey50", header_style="bold cyan", row_styles=["", "dim"])
+    table.add_column("Docket id", style="bold bright_white")
     table.add_column("Case")
     table.add_column("Number")
     table.add_column("Court")
     table.add_column("Entries", justify="right")
     table.add_column("Seen", justify="right")
-    table.add_column("Last polled")
-    table.add_column("Source")
+    table.add_column("Last polled", style="green")
+    table.add_column("Source", style="yellow")
     for c in tracked:
         table.add_row(
             c.docket_id,
@@ -208,8 +212,9 @@ def search(
     if not hits:
         console.print(f"Nothing matched '{query}' in {_mode_note()}.")
         return
-    table = Table(title=f"{len(hits)} match(es) in {_mode_note()}")
-    table.add_column("Docket id", style="bold")
+    table = Table(title=f"{len(hits)} match(es) · {_mode_note()}", title_style="bold bright_white",
+                  box=box.ROUNDED, border_style="grey50", header_style="bold cyan", row_styles=["", "dim"])
+    table.add_column("Docket id", style="bold bright_white")
     table.add_column("Case")
     table.add_column("Number")
     table.add_column("Court")
@@ -285,7 +290,7 @@ def digest(
         path.write_text(text)
     if _emit({"markdown": text, "written_to": str(path) if path else None}, json_out):
         return
-    console.print(text)
+    console.print(Markdown(text))
     if path:
         console.print(f"[dim]Written to {path}[/dim]")
 
