@@ -181,7 +181,10 @@ button:focus-visible, input:focus-visible, summary:focus-visible, .link-btn:focu
 .result-card:hover{ transform: translateY(-3px); box-shadow: 0 20px 44px rgba(20,24,27,0.14), inset 0 1px 0 rgba(255,255,255,0.5); }
 .card-top{ display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: flex-start; }
 .card-title-group{ min-width: 0; }
+.card-title-group > a{ text-decoration: none; color: inherit; }
 .result-title{ margin: 0; font-size: 18px; line-height: 1.3; letter-spacing: -.01em; }
+.result-title:hover{ text-decoration: underline; }
+.case-card{ cursor: pointer; }
 .result-meta{ margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px 12px; color: var(--ink-soft); font-size: 12px; }
 .result-meta .pid{ color: var(--ink); font-weight: 600; }
 

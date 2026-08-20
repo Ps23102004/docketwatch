@@ -46,8 +46,9 @@
         var card = element('div', 'glass result-card case-card');
         var heading = element('div', 'card-top');
         var name = element('div', 'card-title-group');
+        var hash = '#case/' + encodeURIComponent(caseItem.docket_id);
         var titleLink = element('a', '');
-        titleLink.href = '#case/' + encodeURIComponent(caseItem.docket_id);
+        titleLink.href = hash;
         titleLink.append(element('h2', 'result-title', caseItem.case_name || caseItem.docket_id));
         name.append(titleLink);
         name.append(element('p', 'result-meta', [caseItem.docket_number || 'No docket number', caseItem.court || 'Court not listed'].join(' · ')));
@@ -58,6 +59,13 @@
         removeBtn.addEventListener('click', function(){ removeCase(caseItem.docket_id); });
         actions.append(removeBtn);
         card.append(heading, actions);
+        // Whole card navigates, not just the title text -- the title <a> stays for
+        // accessibility/middle-click/open-in-new-tab; this handler covers the rest of
+        // the card's area. Clicks inside .card-actions (the Remove button) are excluded.
+        card.addEventListener('click', function(event){
+          if (event.target.closest('a, button')) return;
+          location.hash = hash;
+        });
         container.append(card);
       });
     }).catch(function(error){
