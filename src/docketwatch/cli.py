@@ -24,6 +24,7 @@ from docketwatch import digest as digest_mod
 from docketwatch import state_store
 from docketwatch.ai import AIBackendError, answer_question, explain_entry
 from docketwatch.models import Docket, DocketEntry, TrackedCase
+from docketwatch.poll import run_poll_cycle
 from docketwatch.sources import Budget, DocketDataError, get_source, live_enabled
 from docketwatch.state_store import StateStoreError
 
@@ -301,11 +302,14 @@ def poll(
     write: bool = typer.Option(False, "--write", help="Save the digest to ~/.docketwatch/digests/<date>.md"),
     json_out: bool = typer.Option(False, "--json"),
 ) -> None:
-    """Fetch each tracked case and report only entries not seen before.
+    """Fetch each tracked case, report new entries, and notify on anything new.
 
-    Live mode costs 2 API requests per case; with a 5/minute free-tier budget
-    that is 2 cases a minute, and `sources.Budget` refuses the third rather
-    than letting CourtListener throttle it.
+    New filings on a case get an AI summary (llm-ladder's "digest" chain in
+    `chains.yaml`) and a native notification -- see `poll.run_poll_cycle` and
+    `notify.fire`. Live mode costs 2 API requests per case; with a 5/minute
+    free-tier budget that is 2 cases a minute, and the run stops and reports
+    the rest as skipped rather than letting CourtListener throttle it -- not
+    an error, so it still exits 0.
     """
     try:
         targets = [state_store.load_case(docket_id)] if docket_id else state_store.list_cases()
@@ -315,21 +319,14 @@ def poll(
     if not targets:
         console.print("No cases tracked yet. Run `docketwatch track <docket_id>`.")
         return
+    labels = {c.docket_id: c.case_name or c.docket_id for c in targets}
 
-    source = get_source()
-    new_by_case, errors = {}, {}
-    for case in targets:
-        try:
-            docket = source.fetch_docket(case.docket_id)
-            new = state_store.diff(case.docket_id, docket.entries)
-            state_store.save_entries(case.docket_id, docket.entries)
-            state_store.mark_seen(case.docket_id, [e.id for e in new])
-            new_by_case[case.docket_id] = new
-        except (DocketDataError, StateStoreError) as exc:
-            errors[case.docket_id] = str(exc)
+    result = run_poll_cycle(docket_ids=[docket_id] if docket_id else None)
+    new_by_case = {d: result.outcomes[d].new_entries for d in result.polled}
+    errors = {d: o.error for d, o in result.outcomes.items() if o.error}
 
-    refreshed = [state_store.load_case(c.docket_id) for c in targets if c.docket_id not in errors]
-    text = digest_mod.daily_digest(refreshed, {k: v for k, v in new_by_case.items()})
+    refreshed = [state_store.load_case(d) for d in result.polled]
+    text = digest_mod.daily_digest(refreshed, new_by_case)
     path = None
     if write:
         path = state_store.digest_path()
@@ -340,9 +337,12 @@ def poll(
         print(
             jsonlib.dumps(
                 {
-                    "polled": [c.docket_id for c in targets],
-                    "new_entries": {k: [e.to_dict() for e in v] for k, v in new_by_case.items()},
+                    "polled": result.polled,
+                    "skipped": result.skipped,
+                    "budget_stopped": result.budget_stopped,
+                    "new_entries": {d: [e.to_dict() for e in v] for d, v in new_by_case.items()},
                     "errors": errors,
+                    "summary_errors": {d: o.summary_error for d, o in result.outcomes.items() if o.summary_error},
                     "markdown": text,
                     "written_to": str(path) if path else None,
                 },
@@ -351,16 +351,24 @@ def poll(
         )
         return
 
-    for case in targets:
-        if case.docket_id in errors:
-            error_console.print(f"[bold red]{case.docket_id}:[/bold red] {errors[case.docket_id]}")
+    for d, outcome in result.outcomes.items():
+        label = labels.get(d, d)
+        if outcome.error:
+            error_console.print(f"[bold red]{d}:[/bold red] {outcome.error}")
             continue
-        new = new_by_case[case.docket_id]
-        label = case.case_name or case.docket_id
-        if not new:
+        if not outcome.new_entries:
             console.print(f"[dim]{label}: nothing new.[/dim]")
-        else:
-            console.print(_entries_table(new, f"{label} — {len(new)} NEW"))
+            continue
+        console.print(_entries_table(outcome.new_entries, f"{label} — {len(outcome.new_entries)} NEW"))
+        if outcome.summary_error:
+            console.print(f"[dim]AI summary unavailable: {outcome.summary_error}[/dim]")
+        elif outcome.summary is not None and getattr(outcome.summary, "lens_verdict", None):
+            console.print(Panel(outcome.summary.lens_verdict, title="AI summary"))
+    if result.skipped:
+        console.print(
+            f"[yellow]Rate budget nearly spent — skipped {len(result.skipped)} "
+            f"case(s): {', '.join(result.skipped)}[/yellow]"
+        )
     if path:
         console.print(f"[dim]Digest written to {path}[/dim]")
     if errors:

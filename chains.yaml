@@ -1,0 +1,8 @@
+# Tiers must be real Ollama-pulled model tags (llm-ladder talks to Ollama's
+# native /api/chat). gemma4:e4b-mlx is the local model on this machine
+# (Ollama, :11434) -- same convention as grantradar/chains.yaml.
+chains:
+  digest:
+    - model: gemma4:e4b-mlx
+      samples: 3
+      threshold: 0.7
