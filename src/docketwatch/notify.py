@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from typing import List, Optional
 
 from docketwatch.models import DocketEntry, TrackedCase
-from docketwatch.state_store import digest_path
+from docketwatch.state_store import append_digest
 
 
 def _applescript_quote(text: str) -> str:
@@ -72,8 +72,6 @@ def fire(case: TrackedCase, new_entries: List[DocketEntry], summary: Optional[ob
     plural = "s" if count != 1 else ""
     _osascript_notify(f"DocketWatch: {label}", f"{count} new filing{plural}")
 
-    path = digest_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     entry_lines = "\n".join(
         f"- [{e.entry_number if e.entry_number is not None else '-'}] {e.date_filed} {e.description}"
@@ -84,5 +82,4 @@ def fire(case: TrackedCase, new_entries: List[DocketEntry], summary: Optional[ob
         f"{entry_lines}\n\n"
         f"**AI summary:**\n{_summary_text(summary)}\n"
     )
-    with path.open("a", encoding="utf-8") as fh:
-        fh.write(block)
+    append_digest(block)

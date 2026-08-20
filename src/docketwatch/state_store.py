@@ -198,3 +198,18 @@ def digest_path(day: Optional[str] = None) -> Path:
     if not re.match(r"^\d{4}-\d{2}-\d{2}$", day):
         raise StateStoreError(f"'{day}' is not a YYYY-MM-DD date.")
     return DIGESTS_DIR / f"{day}.md"
+
+
+def append_digest(text: str, day: Optional[str] = None) -> Path:
+    """Append `text` to today's digest file and return its path.
+
+    Append, never overwrite: `notify.fire` writes a block into this same file
+    every time it announces new filings, and that record is not reproducible
+    from anything else. A `--write` render is, so the render is what gives
+    way. Every writer of `digest_path()` goes through here.
+    """
+    path = digest_path(day)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(text if text.endswith("\n") else text + "\n")
+    return path

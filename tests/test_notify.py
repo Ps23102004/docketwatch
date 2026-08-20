@@ -103,3 +103,17 @@ def test_fire_appends_across_multiple_calls(monkeypatch):
     notify.fire(CASE, ENTRIES, None)
     text = state_store.digest_path().read_text()
     assert text.count(CASE.case_name) == 2
+
+
+def test_a_write_render_never_clobbers_a_fired_notification(monkeypatch):
+    """Regression: `poll --write`/`digest --write` used to `write_text()` the
+    same file `fire()` appends to, destroying the only record of what the
+    user was actually notified about. Every writer appends now."""
+    monkeypatch.setattr(notify.subprocess, "run", MagicMock())
+
+    notify.fire(CASE, ENTRIES, None)
+    state_store.append_digest("# Daily digest\n\nrendered by --write\n")
+
+    text = state_store.digest_path().read_text()
+    assert "Case Management Conference" in text  # the fired notification survived
+    assert "rendered by --write" in text

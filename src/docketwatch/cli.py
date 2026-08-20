@@ -284,11 +284,7 @@ def digest(
     except StateStoreError as exc:
         _fail(exc)
         return
-    path = None
-    if write:
-        path = state_store.digest_path()
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
+    path = state_store.append_digest(text) if write else None
     if _emit({"markdown": text, "written_to": str(path) if path else None}, json_out):
         return
     console.print(Markdown(text))
@@ -327,11 +323,7 @@ def poll(
 
     refreshed = [state_store.load_case(d) for d in result.polled]
     text = digest_mod.daily_digest(refreshed, new_by_case)
-    path = None
-    if write:
-        path = state_store.digest_path()
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
+    path = state_store.append_digest(text) if write else None
 
     if json_out:
         print(

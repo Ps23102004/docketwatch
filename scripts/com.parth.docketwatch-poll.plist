@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Runs `docketwatch poll` every 3 hours.
+
+  Deliberately no KeepAlive: each fire runs one poll cycle to completion and
+  exits 0, and launchd reschedules it StartInterval seconds later. KeepAlive
+  would treat the clean exit as a crash and respawn it in a tight loop.
+
+  Fixture mode. To poll real dockets, add DOCKETWATCH_LIVE=1 and
+  COURTLISTENER_API_TOKEN to EnvironmentVariables below -- see
+  src/docketwatch/spike_courtlistener_auth.py. Without a token live mode
+  refuses to run rather than quietly serving sample data.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.parth.docketwatch-poll</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/parthsingh/Developer/docketwatch/.venv/bin/docketwatch</string>
+        <string>poll</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>HOME</key>
+        <string>/Users/parthsingh</string>
+    </dict>
+    <key>WorkingDirectory</key>
+    <string>/Users/parthsingh/Developer/docketwatch</string>
+    <key>StartInterval</key>
+    <integer>10800</integer>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/parthsingh/.docketwatch/launchd-poll.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/parthsingh/.docketwatch/launchd-poll.log</string>
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>
