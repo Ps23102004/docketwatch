@@ -1,36 +1,70 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
   <title>DocketWatch</title>
-  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="theme.css">
 </head>
 <body>
-  <!-- DocketWatch is a quiet case desk: scan status first, then inspect the filing trail. -->
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="#cases">DocketWatch <span>CASE DESK</span></a>
-      <nav aria-label="Primary navigation">
-        <a href="#cases">Cases</a><a href="#search">Search</a>
-      </nav>
-    </header>
-    <main id="app" tabindex="-1"><p class="state">Loading cases…</p></main>
-  </div>
-  <script type="module">
-    import { getCases } from './lib/api.js';
-    import { renderSearch } from './sections/search.js';
-    import { renderDigest } from './sections/digest.js';
-    const app = document.querySelector('#app');
-    let cases = [];
-    const render = async () => {
-      const route = location.hash.slice(1) || 'cases';
-      if (route === 'search') return renderSearch(app, cases);
-      if (route.startsWith('digest/')) return renderDigest(app, route.slice(7));
-      app.innerHTML = `<section class="intro"><p class="eyebrow">Tracked docket desk</p><h1>Cases worth watching.</h1><p>Choose a case to read its filing trail, or search every cached filing.</p></section><section class="case-list">${cases.length ? cases.map(c => `<a class="case-row" href="#digest/${encodeURIComponent(c.docket_id)}"><span><strong>${c.case_name || c.docket_id}</strong><small>${c.docket_number || 'No docket number'} · ${c.court || 'Court not listed'}</small></span><span class="count">${(c.entries || []).length} filings <b>→</b></span></a>`).join('') : '<p class="empty">No cases tracked yet.</p>'}</section>`;
-    };
-    const boot = async () => { try { cases = await getCases(); await render(); } catch (error) { app.innerHTML = `<p class="error">Could not load cases. ${error.message}</p>`; } };
-    addEventListener('hashchange', render); boot();
-  </script>
+  <!-- Shared shell only: feature workers own the contents of the marked mount points. -->
+  <header class="nav">
+    <a class="logo" href="#cases" aria-label="DocketWatch case list">
+      DocketWatch<span class="dot" aria-hidden="true"></span>
+    </a>
+    <nav class="nav-links" aria-label="Primary navigation">
+      <a href="#cases" data-view-link="cases" aria-current="page">Cases</a>
+      <a href="#case" data-view-link="case">Case detail</a>
+    </nav>
+  </header>
+
+  <main class="stage" id="main-content" tabindex="-1">
+    <p id="app-status" class="app-status" role="status" aria-live="polite"></p>
+
+    <!-- Case-list worker: render list, loading, empty, and error states in #case-list. -->
+    <section id="case-list-view" class="app-view is-active" data-view="cases" aria-labelledby="case-list-heading">
+      <header class="surface-header">
+        <h1 id="case-list-heading" class="display">Tracked cases</h1>
+        <p>Monitor recent filings and open a case for its full docket history.</p>
+      </header>
+      <div id="case-list" class="case-list" aria-live="polite" aria-busy="true">
+        <div class="state-panel glass">
+          <span class="spinner-ring" aria-hidden="true"></span>
+          <h2>Loading cases</h2>
+          <p>DocketWatch is reading the cases tracked on this device.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Case-detail worker: remove `hidden`, populate the mount points, and update nav state. -->
+    <section id="case-detail-view" class="app-view" data-view="case" aria-labelledby="case-detail-title" hidden>
+      <a class="back-link" href="#cases">Back to cases</a>
+      <header class="surface-header">
+        <h1 id="case-detail-title" class="display">Case detail</h1>
+        <p id="case-detail-meta">Select a tracked case to view its filings.</p>
+      </header>
+
+      <div id="case-detail-summary" class="detail-summary"></div>
+      <section id="case-timeline" class="detail-section" aria-labelledby="timeline-heading">
+        <h2 id="timeline-heading">Timeline</h2>
+        <div id="timeline-list"></div>
+      </section>
+      <section id="case-digest" class="detail-section" aria-labelledby="digest-heading">
+        <h2 id="digest-heading">Digest</h2>
+        <div id="digest-content"></div>
+      </section>
+      <section id="case-ask" class="detail-section" aria-labelledby="ask-heading">
+        <h2 id="ask-heading">Ask about this case</h2>
+        <div id="ask-content"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="lib/api.js"></script>
+  <script src="sections/case-detail.js"></script>
+  <script src="sections/case-list.js"></script>
 </body>
 </html>
