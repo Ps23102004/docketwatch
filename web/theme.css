@@ -34,11 +34,29 @@ body{
 .mono{ font-family: ui-monospace, "SF Mono", "Menlo", "Cascadia Mono", monospace; }
 
 /* ---------- Nav ---------- */
-header.nav{ display: flex; align-items: center; max-width: 880px; margin: 0 auto; padding: 24px 22px 0; }
-header.nav .logo{ font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 7px; }
+header.nav{ display: flex; align-items: center; gap: 28px; max-width: 880px; margin: 0 auto; padding: 24px 22px 0; }
+header.nav .logo{ margin-right: auto; font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 7px; }
 header.nav .logo .dot{ width: 6px; height: 6px; border-radius: 50%; background: var(--accent-2); }
+nav.nav-links{ display: flex; align-items: center; gap: 22px; font-size: 14px; }
+nav.nav-links a{ color: var(--ink-soft); text-decoration: none; }
+nav.nav-links a:hover{ color: var(--ink); }
+nav.nav-links a[aria-current="page"]{ color: var(--ink); font-weight: 600; border-bottom: 2px solid var(--accent); padding-bottom: 3px; }
 
 .stage{ width: 100%; max-width: 880px; margin: 0 auto; padding: 24px 22px 96px; display: flex; flex-direction: column; gap: 28px; }
+
+/* ---------- App shell ---------- */
+.app-status:empty{ display: none; }
+.app-status{ margin: 0; color: var(--ink-soft); font-size: 13px; }
+.app-view[hidden]{ display: none; }
+.surface-header{ padding: 10px 2px 22px; }
+.surface-header h1{ margin: 0; max-width: 680px; font-size: clamp(30px, 5.6vw, 48px); line-height: 1.04; letter-spacing: -.02em; }
+.surface-header p{ max-width: 620px; margin: 14px 0 0; color: var(--ink-soft); font-size: 16px; line-height: 1.55; }
+.back-link{ display: inline-block; margin-bottom: 12px; color: var(--ink-soft); font-size: 13px; font-weight: 600; text-underline-offset: 3px; }
+.back-link:hover{ color: var(--accent); }
+.case-list{ display: flex; flex-direction: column; gap: 22px; }
+.detail-summary{ margin-bottom: 28px; }
+.detail-section{ padding: 26px 2px; border-top: 1px solid rgba(20,24,27,0.10); }
+.detail-section h2{ margin: 0 0 16px; font-size: 20px; letter-spacing: -.01em; }
 
 /* ---------- Glass base ---------- */
 .glass{
@@ -129,7 +147,7 @@ button:focus-visible, input:focus-visible, summary:focus-visible, .link-btn:focu
 .cpc-row{ display: grid; grid-template-columns: 108px 1fr 34px; align-items: center; gap: 10px; }
 .cpc-code{ font-size: 12px; }
 .cpc-track{ display: block; height: 10px; border-radius: 999px; background: var(--track); overflow: hidden; }
-.cpc-fill{ display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), #123F51); width: 0%; transition: width .6s cubic-bezier(0.16,1,0.3,1); }
+.cpc-fill{ display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), #123F51); width: 0%; }
 .cpc-count{ font-size: 12px; color: var(--ink-soft); text-align: right; }
 
 /* ---------- Result cards (stacked-document z-depth) ---------- */
@@ -181,6 +199,8 @@ button:focus-visible, input:focus-visible, summary:focus-visible, .link-btn:focu
 }
 
 @media (max-width: 640px){
+  header.nav{ align-items: flex-start; gap: 16px; }
+  nav.nav-links{ gap: 14px; font-size: 13px; }
   .card-top{ grid-template-columns: 1fr; }
   .seal{ order: -1; }
   .cpc-row{ grid-template-columns: 84px 1fr 30px; }
@@ -206,6 +226,7 @@ button:focus-visible, input:focus-visible, summary:focus-visible, .link-btn:focu
   select, input[type="text"], input[type="search"]{ background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
   .detail-btn{ background: rgba(79,184,222,0.12); border-color: rgba(79,184,222,0.3); }
   .cpc-fill{ background: linear-gradient(90deg, var(--accent), #123F51); }
+  .detail-section{ border-top-color: rgba(255,255,255,0.10); }
 }
 
 /* ---------- Filing desk sections ---------- */
