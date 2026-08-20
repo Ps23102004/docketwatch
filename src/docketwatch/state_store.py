@@ -102,6 +102,7 @@ def track_case(docket_id: str, metadata: Optional[Dict[str, Any]] = None) -> Tra
         "last_polled_at": existing.last_polled_at if existing else None,
         "seen_entry_ids": list(existing.seen_entry_ids) if existing else [],
         "entries": metadata.get("entries", [e.to_dict() for e in existing.entries] if existing else []),
+        "parties": metadata.get("parties", existing.parties if existing else []),
         "source": metadata.get("source", existing.source if existing else "fixture"),
         "note": metadata.get("note", existing.note if existing else ""),
     }

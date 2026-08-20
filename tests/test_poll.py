@@ -57,11 +57,17 @@ class FakeSource(DocketSource):
 
     source_id = "fixture"
 
-    def __init__(self, dockets: dict, budget: Budget = None, call_log: list = None, fail_on=()):
+    def __init__(self, dockets: dict, budget: Budget = None, call_log: list = None, fail_on=(),
+                 uses_budget: bool = False):
         self.dockets = dockets
         self.budget = budget
         self.call_log = call_log if call_log is not None else []
         self.fail_on = set(fail_on)
+        # True only in the budget-guard tests below, where this fake stands in
+        # for a metered live source (it consumes `budget` in fetch_docket just
+        # like CourtListenerSource does) -- everywhere else it behaves like the
+        # real FixtureSource, which never spends the rate budget.
+        self.uses_budget = uses_budget
 
     def fetch_docket(self, docket_id: str) -> Docket:
         self.call_log.append(f"fetch:{docket_id}")
@@ -189,7 +195,7 @@ def test_budget_guard_stops_the_cycle_and_reports_skipped(tmp_path, monkeypatch)
     _track("case-3")
     budget = Budget(directory=tmp_path)  # fresh: 5/min, 50/hour, 125/day
     dockets = {f"case-{i}": _docket(f"case-{i}", ["e1"]) for i in (1, 2, 3)}
-    source = FakeSource(dockets, budget=budget)  # each fetch consumes 2 of the 5/minute
+    source = FakeSource(dockets, budget=budget, uses_budget=True)  # each fetch consumes 2 of the 5/minute
     monkeypatch.setattr(poll, "summarize_new_filings", MagicMock(return_value=None))
     monkeypatch.setattr(poll.notify, "fire", MagicMock())
 
@@ -212,7 +218,7 @@ def test_budget_already_exhausted_skips_everything_and_exits_cleanly(tmp_path, m
     for _ in range(4):
         budget.consume()
 
-    source = FakeSource({}, budget=budget)  # would raise KeyError if ever asked to fetch
+    source = FakeSource({}, budget=budget, uses_budget=True)  # would raise KeyError if ever asked to fetch
     monkeypatch.setattr(poll, "summarize_new_filings", MagicMock())
     monkeypatch.setattr(poll.notify, "fire", MagicMock())
 

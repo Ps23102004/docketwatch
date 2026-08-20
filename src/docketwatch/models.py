@@ -82,8 +82,17 @@ def classify_entry_type(description: Optional[str]) -> str:
 
 
 def _provenance(data: Dict[str, Any]) -> Dict[str, str]:
-    """Pull `source`/`note` off a dict, defaulting loudly rather than silently."""
+    """Pull `source`/`note` off a dict, defaulting loudly rather than silently.
+
+    A missing/empty `source` becomes the honest sentinel `"unknown"`. An
+    explicit `source` that isn't one of `VALID_SOURCES` is rejected outright
+    -- the module docstring calls this a closed set ("Nothing else"), so a
+    hand-edited or partially-migrated record with a garbage `source` string
+    should fail loudly here rather than carry it forever.
+    """
     source = data.get("source") or "unknown"
+    if source != "unknown" and source not in VALID_SOURCES:
+        raise ValueError(f"'source' must be one of {VALID_SOURCES} (or omitted); got {source!r}.")
     return {"source": source, "note": data.get("note") or ""}
 
 
@@ -228,6 +237,7 @@ class TrackedCase:
     last_polled_at: Optional[str] = None
     seen_entry_ids: List[str] = field(default_factory=list)
     entries: List[DocketEntry] = field(default_factory=list)
+    parties: List[Dict[str, Any]] = field(default_factory=list)
     source: str = SOURCE_FIXTURE
     note: str = ""
 
@@ -246,5 +256,6 @@ class TrackedCase:
         known["docket_id"] = str(known["docket_id"])
         known["seen_entry_ids"] = [str(i) for i in (data.get("seen_entry_ids") or [])]
         known["entries"] = [DocketEntry.from_dict(e) for e in (data.get("entries") or [])]
+        known["parties"] = list(data.get("parties") or [])
         known.update(_provenance(data))
         return cls(**known)

@@ -76,12 +76,17 @@ def run_poll_cycle(
     """
     source = source or get_source()
     budget = budget or Budget()
+    # Fixture mode never touches the network or Budget's own request log, so
+    # it must never be gated by whatever a live run wrote to that log earlier
+    # the same day -- only a source that actually spends real requests
+    # (`DocketSource.uses_budget`, true for CourtListenerSource) is metered.
+    needs_budget = getattr(source, "uses_budget", False)
 
     cases = [state_store.load_case(d) for d in docket_ids] if docket_ids else state_store.list_cases()
 
     result = PollCycleResult()
     for case in cases:
-        if not _budget_has_room(budget):
+        if needs_budget and not _budget_has_room(budget):
             result.skipped.append(case.docket_id)
             result.budget_stopped = True
             logger.info("budget guard: skipping %s, rate budget nearly spent", case.docket_id)

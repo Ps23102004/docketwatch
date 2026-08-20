@@ -22,6 +22,7 @@ Polling only. Webhooks need a paid arrangement and are not built toward.
 
 from __future__ import annotations
 
+import fcntl
 import json
 import os
 import time
@@ -104,18 +105,30 @@ class Budget:
     def consume(self, now: Optional[float] = None) -> None:
         """Record one request, or raise `RateBudgetError` if it would exceed a cap."""
         now = time.time() if now is None else now
-        state = self.status(now)
-        for window, wait in (("minute", "a minute"), ("hour", "an hour"), ("day", "tomorrow")):
-            if state["remaining"][window] == 0:
-                raise RateBudgetError(
-                    f"CourtListener free-tier {window} limit reached "
-                    f"({state['used'][window]}/{state['limits'][window]}). Wait {wait}. "
-                    "No request was sent."
-                )
-        stamps = self._load(now) + [now]
-        path = self._path(now)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({"requests": stamps}, indent=1))
+        # ponytail: a single flock around read-check-write closes the two-process
+        # race (interactive run overlapping a cron run) where both read the same
+        # stamp list, both see room, and the second writer clobbers the first's
+        # count. Per-window sharding would scale further; not needed for a
+        # single-user local CLI. Unix-only (fine -- this ships for macOS/launchd).
+        self.directory.mkdir(parents=True, exist_ok=True)
+        lock_path = self.directory / ".budget.lock"
+        with open(lock_path, "a+") as lock_fh:
+            fcntl.flock(lock_fh, fcntl.LOCK_EX)
+            try:
+                state = self.status(now)
+                for window, wait in (("minute", "a minute"), ("hour", "an hour"), ("day", "tomorrow")):
+                    if state["remaining"][window] == 0:
+                        raise RateBudgetError(
+                            f"CourtListener free-tier {window} limit reached "
+                            f"({state['used'][window]}/{state['limits'][window]}). Wait {wait}. "
+                            "No request was sent."
+                        )
+                stamps = self._load(now) + [now]
+                path = self._path(now)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(json.dumps({"requests": stamps}, indent=1))
+            finally:
+                fcntl.flock(lock_fh, fcntl.LOCK_UN)
 
 
 # -- the seam -----------------------------------------------------------------
@@ -125,6 +138,10 @@ class DocketSource(ABC):
     """A place docket records can be read from."""
 
     source_id: str = "unknown"
+    #: True only for a source that spends real, rate-limited requests --
+    #: `run_poll_cycle` only consults `Budget` when this is true, so fixture
+    #: runs are never gated by a live run's leftover request log.
+    uses_budget: bool = False
 
     @abstractmethod
     def fetch_docket(self, docket_id: str) -> Docket:
@@ -205,6 +222,7 @@ class CourtListenerSource(DocketSource):
     """
 
     source_id = SOURCE_COURTLISTENER
+    uses_budget = True
 
     def __init__(
         self,

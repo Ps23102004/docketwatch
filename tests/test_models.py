@@ -108,7 +108,7 @@ def test_tracked_case_dict_shape_and_roundtrip():
     payload = case.to_dict()
     assert set(payload) == {
         "docket_id", "case_name", "docket_number", "court", "tracked_at",
-        "last_polled_at", "seen_entry_ids", "entries", "source", "note",
+        "last_polled_at", "seen_entry_ids", "entries", "parties", "source", "note",
     }
     assert TrackedCase.from_dict(payload) == case
 

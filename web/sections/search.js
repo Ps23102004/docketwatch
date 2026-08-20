@@ -1,7 +1,0 @@
-const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-export function renderSearch(root, cases) {
-  root.innerHTML = `<div class="toolbar"><div><p class="eyebrow">Cached filing index</p><h1>Search filings.</h1></div><div><label for="filing-search">Search description, party, or type</label><input id="filing-search" type="search" placeholder="e.g. motion, Smith, notice" autocomplete="off"></div></div><div id="search-results" aria-live="polite"></div>`;
-  const input = root.querySelector('#filing-search'); const results = root.querySelector('#search-results');
-  const render = () => { const query = input.value.trim().toLowerCase(); const matches = cases.flatMap((c) => (c.entries || []).map((entry) => ({ case: c, entry }))).filter(({case: c, entry}) => !query || [entry.description, entry.entry_type, entry.filed_by, c.case_name, c.docket_number, ...(c.parties || []).map((p) => typeof p === 'string' ? p : p.name)].join(' ').toLowerCase().includes(query)); results.innerHTML = matches.length ? matches.map(({case:c, entry}) => `<article class="result"><span class="tag">${esc(entry.entry_type || 'other')}</span><h2>${esc(entry.description || 'Untitled filing')}</h2><small>${esc(c.case_name || c.docket_id)} · ${esc(entry.date_filed || 'Date unknown')} · ${esc(entry.filed_by || 'Party not listed')}</small></article>`).join('') : '<p class="empty">No cached filings match that search.</p>'; };
-  input.addEventListener('input', render); render();
-}

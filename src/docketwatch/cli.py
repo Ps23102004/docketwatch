@@ -87,6 +87,7 @@ def track(
                 "docket_number": docket.docket_number,
                 "court": docket.court,
                 "entries": [e.to_dict() for e in docket.entries],
+                "parties": docket.parties,
                 "source": docket.source,
                 "note": docket.note,
             },
@@ -99,7 +100,7 @@ def track(
     console.print(
         f"Tracking [bold]{case.case_name or case.docket_id}[/bold] "
         f"({case.docket_number}, {case.court}) — {len(case.entries)} entries cached, "
-        f"0 marked seen. Run `docketwatch poll` to see what's new."
+        f"{len(case.seen_entry_ids)} marked seen. Run `docketwatch poll` to see what's new."
     )
 
 
